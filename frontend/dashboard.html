@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redesigned Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        html,
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-200 transition duration-300">
+
+    <!-- Container -->
+    <div class="flex flex-col lg:flex-row h-screen">
+
+        <!-- Sidebar -->
+        <div class="lg:w-1/5 bg-gray-800 text-white flex flex-col items-center py-5">
+            <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+            <button id="darkModeBtn" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-full mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3v1m-5 4.5A7.5 7.5 0 1112 21a7.5 7.5 0 01-5-13.5m10 4A7.5 7.5 0 0112 5v1m0 13V9">
+                    </path>
+                </svg>
+            </button>
+            <ul class="space-y-4 text-center">
+                <li><a href="#" class="text-gray-300 hover:text-white transition">Home</a></li>
+                <li><a href="#" class="text-gray-300 hover:text-white transition">Profile</a></li>
+                <li><a href="#" class="text-gray-300 hover:text-white transition">Messages</a></li>
+                <li><a href="#" class="text-gray-300 hover:text-white transition">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6 flex flex-col space-y-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Welcome Back</h1>
+                <div class="flex gap-4">
+                    <button id="editProfileBtn"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-500 transition">
+                        Edit Profile
+                    </button>
+                    <button id="logoutBtn"
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition">
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Profile Overview -->
+                <div class="bg-white dark:bg-gray-800 shadow-lg p-6 rounded-xl">
+                    <h2 class="text-lg font-semibold">Profile Overview</h2>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400">View and manage your account details.</p>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="bg-white dark:bg-gray-800 shadow-lg p-6 rounded-xl">
+                    <h2 class="text-lg font-semibold">Recent Activities</h2>
+                    <ul class="mt-4 space-y-2">
+                        <li class="text-gray-600 dark:text-gray-400">Logged in from new device</li>
+                        <li class="text-gray-600 dark:text-gray-400">Changed account password</li>
+                        <li class="text-gray-600 dark:text-gray-400">Viewed transaction history</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-gray-800 shadow-lg p-6 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold">Users</h2>
+                    <p class="text-2xl font-bold mt-2">1,234</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-lg p-6 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold">Revenue</h2>
+                    <p class="text-2xl font-bold mt-2">$12,345</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-lg p-6 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold">Orders</h2>
+                    <p class="text-2xl font-bold mt-2">567</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="editProfileModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg w-4/5 md:w-1/2">
+            <h2 class="text-xl font-semibold mb-4">Edit Profile</h2>
+            <form id="editProfileForm">
+                <div class="space-y-4">
+                    <label class="block">
+                        Username:
+                        <input type="text" id="username" class="w-full p-2 border rounded-md">
+                    </label>
+                    <label class="block">
+                        Password:
+                        <input type="password" id="password" class="w-full p-2 border rounded-md">
+                    </label>
+                </div>
+                <div class="flex justify-between mt-4">
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Save</button>
+                    <button type="button" id="closeModalBtn"
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="middleware.js"></script>
+    <script>
+        // Dark Mode Toggle
+        document.getElementById("darkModeBtn").addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+        });
+
+        // Show Modal
+        const editProfileBtn = document.getElementById("editProfileBtn");
+        const editProfileModal = document.getElementById("editProfileModal");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+
+        editProfileBtn.addEventListener("click", () => {
+            editProfileModal.classList.remove("hidden");
+        });
+
+        closeModalBtn.addEventListener("click", () => {
+            editProfileModal.classList.add("hidden");
+        });
+
+        // Form Submission
+        document.getElementById("editProfileForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Fungsi untuk mendapatkan cookie berdasarkan nama
+            function getCookie(name) {
+                const cookies = document.cookie.split("; ");
+                const cookie = cookies.find((row) => row.startsWith(`${name}=`));
+                return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
+            }
+
+            // Ambil nilai cookie
+            const id = getCookie("id");
+            const token = getCookie("token");
+            console.log(id, token);
+
+            // Ambil nilai dari form
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            // Validasi input
+            if (!id || !token) {
+                alert("Invalid user session. Please log in again.");
+                return;
+            }
+
+            if (!username || !password) {
+                alert("Username and password are required.");
+                return;
+            }
+
+            const response = await fetch("http://localhost/backend/public/edit-profile.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ id, username, password }),
+            });
+
+            const rawResponse = await response.text(); // Get raw response as text
+            // Log the raw response
+
+            try {
+                const data = JSON.parse(rawResponse); // Parse the raw response as JSON
+                console.log(data);
+
+                if (data.status === "success") {
+                    alert(data.message || "Profile updated successfully!");
+                    editProfileModal.classList.add("hidden");
+                } else {
+                    alert(data.message || "Failed to update profile.");
+                }
+            } catch (error) {
+                console.error("Error during profile update:", error);
+                alert("An error occurred. Please try again later.");
+            }
+
+        });
+
+        // Logout
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            alert("Logged out!");
+            window.location.href = "index.html";
+        });
+    </script>
+</body>
+
+</html>
